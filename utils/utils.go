@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"log"
+	"sort"
 	"sync"
 
 	"github.com/google/gopacket"
@@ -18,10 +19,27 @@ var (
 	// timeout      pcap.BlockForever
 	handle *pcap.Handle
 	// domainMap map[string]int
-	lock sync.Mutex
+	// lock sync.Mutex
 )
 
-func CaptureDNSPcts(device string, domainMap map[string]int) {
+type DomainCount struct {
+	Domain string
+	Count  int
+}
+
+func SortMap(DomainMap map[string]int) []DomainCount {
+	var domains []DomainCount
+	for domain, count := range DomainMap {
+		domains = append(domains, DomainCount{Domain: domain, Count: count})
+	}
+
+	sort.Slice(domains, func(i, j int) bool {
+		return domains[i].Count > domains[j].Count
+	})
+	return domains
+}
+
+func CaptureDNSPcts(device string, domainMap map[string]int, lock *sync.Mutex) {
 	// Capturing live packets using pcap
 	handle, err = pcap.OpenLive(device, snapshot_len, promiscuous, pcap.BlockForever)
 	if err != nil {

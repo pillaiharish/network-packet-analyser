@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 
 	"network-packet-analyser/utils"
 
@@ -18,7 +19,7 @@ var (
 	// timeout      pcap.BlockForever
 	// handle    *pcap.Handle
 	domainMap map[string]int
-	// lock      sync.Mutex
+	lock      sync.Mutex
 )
 
 func main() {
@@ -30,10 +31,14 @@ func main() {
 	device = os.Args[1]
 	fmt.Println(device)
 	domainMap = make(map[string]int)
-	go utils.CaptureDNSPcts(device, domainMap)
+
+	go utils.CaptureDNSPcts(device, domainMap, &lock)
 
 	r.GET("/data", func(c *gin.Context) {
-		c.JSON(200, domainMap)
+		lock.Lock()
+		sortedDomains := utils.SortMap(domainMap)
+		lock.Unlock()
+		c.JSON(200, sortedDomains)
 	})
 	r.Run(":8880")
 }

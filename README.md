@@ -5,7 +5,7 @@ I have a mac connected to the internet. Want to keep a track of the websites tha
 For me it is en0 on which I am connected on my home wifi. Since this code captures packets on interface, the main should run on root permissions. The terminal logs will print the domain names.
 
 ```bash
-sudo go run main.go en0
+sudo go run src/main.go en0
 ```
 
 ## Building the project
