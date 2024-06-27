@@ -1,46 +1,27 @@
-package main
+package utils
 
 import (
 	"fmt"
 	"log"
-	"os"
 	"sync"
 
-	"github.com/gin-gonic/gin"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
 )
 
 var (
-	device       string
+	// device       string
 	snapshot_len int32 = 1024
 	promiscuous  bool  = false
 	err          error
 	// timeout      pcap.BlockForever
-	handle    *pcap.Handle
-	domainMap map[string]int
-	lock      sync.Mutex
+	handle *pcap.Handle
+	// domainMap map[string]int
+	lock sync.Mutex
 )
 
-func main() {
-	if len(os.Args) != 2 {
-		log.Fatal("Usage: go run main.go <interface>")
-	}
-	r := gin.Default()
-	// r.Static("assets")
-	device = os.Args[1]
-	fmt.Println(device)
-	domainMap = make(map[string]int)
-	go captureDNSPcts(device)
-
-	r.GET("/data", func(c *gin.Context) {
-		c.JSON(200, domainMap)
-	})
-	r.Run(":8880")
-}
-
-func captureDNSPcts(device string) {
+func CaptureDNSPcts(device string, domainMap map[string]int) {
 	// Capturing live packets using pcap
 	handle, err = pcap.OpenLive(device, snapshot_len, promiscuous, pcap.BlockForever)
 	if err != nil {
