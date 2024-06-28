@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Domain Frequency Dashboard</title>
+    <title>DNS Monitoring Dashboard</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Domain Visit Frequency</h1>
-        <div id="domainList" class="domain-list"></div>
+        <div class="panel visited">
+            <h2>Visited Sites</h2>
+            <div id="visitedList" class="list"></div>
+        </div>
+        <div class="panel blocked">
+            <h2>Malware Sites</h2>
+            <div id="blockedList" class="list"></div>
+        </div>
     </div>
     <script src="/static/script.js"></script>
 </body>

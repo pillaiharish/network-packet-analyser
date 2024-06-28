@@ -10,7 +10,7 @@ import (
 )
 
 func generateTCP(wg *sync.WaitGroup) {
-	defer wg.Done() // Decrement the waitgroup counter by one
+	defer wg.Done()
 	// The Dial function connects to a server on network type (tcp)
 	conn, err := net.Dial("tcp", "golang.org:80")
 	if err != nil {
@@ -22,7 +22,7 @@ func generateTCP(wg *sync.WaitGroup) {
 }
 
 func generateUDP(wg *sync.WaitGroup) {
-	defer wg.Done()                            // Decrement the waitgroup counter by one
+	defer wg.Done()
 	conn, err := net.Dial("udp", "8.8.8.8:53") // Google dns
 	if err != nil {
 		fmt.Println("Error connecting udp:", err)
@@ -83,11 +83,13 @@ func generateDNS(wg *sync.WaitGroup) {
 func main() {
 	var wg sync.WaitGroup
 	wg.Add(5)
-	go generateTCP(&wg)
+	// go generateTCP(&wg)
 	go generateUDP(&wg)
-	go generateHTTP(&wg)
+	// go generateHTTP(&wg)
 	go generateDNS(&wg)
-	go generateHTTPS(&wg)
+	// go generateHTTPS(&wg)
 	wg.Wait()
 
 }
+
+//https://www.whoisds.com/

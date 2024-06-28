@@ -1,8 +1,8 @@
 # NETWORK PACKET ANALYSER
-I have a mac connected to the internet. Want to keep a track of the websites that i visit. A Golang code running on the background which will help me to keep count of the number of times i have visited a website is capture.
+I have a Mac connected to the Internet. Want to keep a track of the websites that I visit. A Golang code running on the background which will help me to keep count of the number of times I have visited a website is captured. Also I have a monitor list which will monitor the domains I want to observe and flag them separately when visited along with its frequency.
 
 ## Pass the interface name 
-For me it is en0 on which I am connected on my home wifi. Since this code captures packets on interface, the main should run on root permissions. The terminal logs will print the domain names.
+Find out the active interface which is serving network traffic. It can be Wi-Fi or Ethernet interface. For me it is en0 on which I am connected on my home wifi. Since this code captures packets on interface, the main.go should run on root permissions. The terminal logs will print the domain names. The UI will load the visited domains traffic and the malware domains. The malware domains are the domains which are visited domains and also in the monitor
 
 ```bash
 sudo go run src/main.go en0
@@ -14,21 +14,49 @@ go build
 go build -o network-packet-analyser main.go 
 ```
 
-## Postman capture
-GET on url http://localhost:8880/data
+## Postman capture for Visited domains 
+/data route has all the dns traffic visited. GET visited websites data from url http://localhost:8880/data
 ```json
-{
-    "2.4.f.e.8.f.1.1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.b.9.f.f.4.6.0.0.ip6.arpa": 2,
-    "5.6.5.b.c.8.2.1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.b.9.f.f.4.6.0.0.ip6.arpa": 2,
-    "app.link": 6,
-    "e.4.2.1.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.0.5.0.0.0.f.0.4.1.0.0.6.2.ip6.arpa": 2,
-    "e4686.dsce9.akamaiedge.net": 2,
-    "fbs.smoot.apple.com": 6,
-    "gspe35-ssl.ls.apple.com": 6,
-    "medium.com": 6,
-    "pubingress-feedback-974d66e8c1341bf9.elb.ap-southeast-1.amazonaws.com": 2
-}
+[
+    {
+        "Domain": "google.com",
+        "Count": 8
+    },
+    {
+        "Domain": "app.link",
+        "Count": 4
+    },
+    {
+        "Domain": "content-autofill.googleapis.com",
+        "Count": 4
+    },
+    {
+        "Domain": "googletagmanager.com",
+        "Count": 4
+    },
+    {
+        "Domain": "49-courier.push.apple.com",
+        "Count": 4
+    },
+]
+```
+
+## Postman capture for Monitor domains 
+/monitor route has the domains that are visited and in the [monitor_list.txt](https://github.com/pillaiharish/network-packet-analyser/blob/main/monitor_list.txt). GET monitor data from url http://localhost:8880/monitor
+```json
+[
+    {
+        "Domain": "newpointglobal.com",
+        "Count": 10
+    },
+    {
+        "Domain": "semaglutidereview.us",
+        "Count": 4
+    }
+]
 ```
 
 ## Postman screencapture
-![Screeshot for API Request](https://github.com/pillaiharish/network-packet-analyser/blob/main/postman_api_response.png)
+![Monitor and Visited Domains](https://github.com/pillaiharish/network-packet-analyser/blob/main/snapshots/monitored_visited_sites.png)
+![Visited Domains JSON](https://github.com/pillaiharish/network-packet-analyser/blob/main/snapshots/get_for_visited_sites.png)
+![Monitor Domains JSON](https://github.com/pillaiharish/network-packet-analyser/blob/main/snapshots/get_for_monitor_sites.png)
