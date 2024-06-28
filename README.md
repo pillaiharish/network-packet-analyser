@@ -2,11 +2,13 @@
 I have a Mac connected to the Internet. Want to keep a track of the websites that I visit. A Golang code running on the background which will help me to keep count of the number of times I have visited a website is captured. Also I have a monitor list which will monitor the domains I want to observe and flag them separately when visited along with its frequency.
 
 ## Pass the interface name 
-Find out the active interface which is serving network traffic. It can be Wi-Fi or Ethernet interface. For me it is en0 on which I am connected on my home wifi. Since this code captures packets on interface, the main.go should run on root permissions. The terminal logs will print the domain names. The UI will load the visited domains traffic and the malware domains. The malware domains are the domains which are visited domains and also in the monitor
-
+Find out the active interface which is serving network traffic. It can be Wi-Fi or Ethernet interface. For me it is en0 on which I am connected on my home wifi. Since this code captures packets on interface, the main.go should run on root permissions. 
 ```bash
 sudo go run src/main.go en0
 ```
+The terminal logs will print the domain names. The UI will load the visited domains traffic and the malware domains. The malware domains are the domains which are visited domains and also in the [monitor list](https://github.com/pillaiharish/network-packet-analyser/blob/main/monitor_list.txt)
+
+
 
 ## Building the project
 ```bash
