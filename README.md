@@ -1,6 +1,8 @@
 # NETWORK PACKET ANALYSER
 I have a Mac connected to the Internet. Want to keep a track of the websites that I visit. A Golang code running on the background which will help me to keep count of the number of times I have visited a website is captured. Also I have a monitor list which will monitor the domains I want to observe and flag them separately when visited along with its frequency.
 
+## [Medium blog: Real-time DNS Monitoring](https://medium.com/@harishpillai1994/real-time-dns-monitoring-1bd37cb43f9a)
+
 ## Pass the interface name 
 Find out the active interface which is serving network traffic. It can be Wi-Fi or Ethernet interface. For me it is en0 on which I am connected on my home wifi. Since this code captures packets on interface, the main.go should run on root permissions. 
 ```bash
