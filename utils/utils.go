@@ -15,14 +15,10 @@ import (
 )
 
 var (
-	// device       string
 	snapshot_len int32 = 1024
 	promiscuous  bool  = false
 	err          error
-	// timeout      pcap.BlockForever
 	handle *pcap.Handle
-	// domainMap map[string]int
-	// lock sync.Mutex
 )
 
 type DomainCount struct {
@@ -30,12 +26,12 @@ type DomainCount struct {
 	Count  int
 }
 
-// remove prefixes like "www."
+// NormalizeDomain removes common prefixes like "www." from domain names
 func NormalizeDomain(domain string) string {
-
 	return strings.TrimPrefix(domain, "www.")
 }
 
+// LoadMalwareList loads a list of malware domains from a file and stores them in a map for quick lookup
 func LoadMalwareList(filename string) map[string]bool {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -52,6 +48,7 @@ func LoadMalwareList(filename string) map[string]bool {
 	return malwareList
 }
 
+// SortMap sorts a map of domains and their respective counts in descending order
 func SortMap(DomainMap map[string]int) []DomainCount {
 	var domains []DomainCount
 	for domain, count := range DomainMap {
@@ -64,21 +61,19 @@ func SortMap(DomainMap map[string]int) []DomainCount {
 	return domains
 }
 
+// CaptureDNSPcts captures DNS packets from a network interface, updates domain counts, and tracks malware domains based on a preloaded list
 func CaptureDNSPcts(device string, domainMap map[string]int, malwareMap map[string]int, lock *sync.Mutex, malwareList map[string]bool) {
-	// Capturing live packets using pcap
 	handle, err = pcap.OpenLive(device, snapshot_len, promiscuous, pcap.BlockForever)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer handle.Close()
 
-	//capture only dsn packets
+	// Capture only DNS packets (port 53)
 	if err := handle.SetBPFFilter("port 53"); err != nil {
 		log.Fatal(err)
 	}
 
-	// https://pkg.go.dev/github.com/google/gopacket#hdr-Reading_Packets_From_A_Source
-	// handle.LinkType hanles the interface type like ethernet /wifi
 	packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
 	fmt.Println(packetSource)
 
@@ -88,10 +83,8 @@ func CaptureDNSPcts(device string, domainMap map[string]int, malwareMap map[stri
 			dns := dnsLayer.(*layers.DNS)
 			for _, query := range dns.Questions {
 				domainName := NormalizeDomain(string(query.Name))
-				// recordType := int(query.Type)
 				fmt.Println(domainName)
 				lock.Lock()
-				// domainName = domainName + "," + string(recordType)
 				domainMap[domainName]++
 				if malwareList[domainName] {
 					malwareMap[domainName]++
